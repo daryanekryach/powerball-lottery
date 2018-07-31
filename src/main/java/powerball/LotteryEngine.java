@@ -15,9 +15,8 @@ public class LotteryEngine {
     private Map<String, Integer> comboPrize;
     private ArrayList<Ticket> registeredTickets;
 
-    private int jackpot = 168000000;
     private String[] winCombos = {"5+1", "5+0", "4+1", "4+0", "3+1", "3+0", "2+1", "1+1", "0+1"};
-    private int[] moneyPrize = {jackpot, 1000000, 50000, 100, 100, 7, 7, 4, 4};
+    private int[] moneyPrize = {168000000, 1000000, 50000, 100, 100, 7, 7, 4, 4};
 
     public LotteryEngine() {
         initializeLotteryInfo();
@@ -47,7 +46,7 @@ public class LotteryEngine {
     }
 
     /**
-     * Perform process of drawing white balls and powerball.
+     * Performs process of drawing white balls and powerball.
      */
     public void performDraw() {
         nonPowerball = ThreadLocalRandom.current()
@@ -83,13 +82,19 @@ public class LotteryEngine {
     }
 
     /**
-     * Prints lottery statistics.
+     * Prints lottery statistics: total amount of registered tickets, combination wins' both expected
+     * and observed results for probability and frequencies.
      */
     public void printLotteryStatistics() {
         System.out.println("Number of registered tickets: " + registeredTickets.size());
-        System.out.println("Combination | Matches | Prize");
-        winInfo.forEach((key, value) -> System.out.println(key + " | " + value + " | " + comboPrize.get(key) + "$"));
 
+        Map<String, Double> probability = Statistics.calculateProbability(winCombos);
+
+        System.out.format("%5s %11s %19s  %13s %13s %13s \n", "Combination", "Prize", "Probability th.", "Probability exp.",
+                "Expected fr.", "Observed fr.");
+        winInfo.forEach((key, value) -> System.out.format("%6s %18s %13f %17f %16f %10d \n",
+                key, comboPrize.get(key) + "$", probability.get(key), (double) value / registeredTickets.size(),
+                probability.get(key) * registeredTickets.size(), value));
     }
 
     /**
@@ -99,5 +104,14 @@ public class LotteryEngine {
      */
     public int getRegisteredTicketsCount() {
         return registeredTickets.size();
+    }
+
+    /**
+     * Returns information on tickets win for current lottery.
+     *
+     * @return win information as map
+     */
+    public Map<String, Integer> getWinInfo() {
+        return winInfo;
     }
 }

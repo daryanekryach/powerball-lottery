@@ -8,26 +8,25 @@ import powerball.Ticket;
 import static org.junit.Assert.assertEquals;
 
 public class LotteryEngineTest {
-    private LotteryEngine lottery;
+    private static LotteryEngine lottery;
 
     @BeforeClass
-    public void setUp() {
+    public static void setUp() {
         lottery = new LotteryEngine();
     }
 
     @Test
-    public void registerTickets() {
-        int ticketsAmount = 550000;
+    public void lotteryEngineTest() {
+        int ticketsAmount = 800000;
         for (int i = 0; i < ticketsAmount; i++) {
             Ticket ticket = new Ticket();
             ticket.quickPick();
             lottery.registerTicket(ticket);
         }
+        lottery.performDraw();
+        lottery.assignWins();
+        lottery.printLotteryStatistics();
+
         assertEquals(ticketsAmount, lottery.getRegisteredTicketsCount());
-    }
-
-    @Test
-    public void collectWins(){
-
     }
 }
